@@ -1,0 +1,5 @@
+.project
+.pydevproject
+impro/#*#
+impro/*~
+impro/__pycache__
