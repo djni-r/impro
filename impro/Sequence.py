@@ -6,7 +6,7 @@ class Sequence:
     key: the key of the sequence
     mode: e.g. major, minor, whole-tone etc. 
     '''        
-    def __init__(self, type, span, key, mode, first_unit):
+    def __init__(self, type, span, key, mode, direction, first_unit):
         self.type = type
         self.span = span
         self.key = key

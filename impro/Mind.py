@@ -1,20 +1,28 @@
 import random
 import math
 from collections import deque
+from threading import Thread
 
+from Rhythm import Rhythm
 from Sequence import Sequence
 from objects import *
-from classes import *
+from unit import *
 from load import mapping
 
-class Mind:
-    def __init__(self, key = None, mode = None, rhythm = None, max_mem = None):
 
-        self.key = key if key != None else random.choice(keys)
-        self.mode = mode if mode != None else random.choice(modes)
-        self.rhythm = rhythm if rhythm != None else random.choice(rhythms)
+class Mind:
+    def __init__(self, key = None, mode = None,
+                 rhythm = None, max_mem = None):
+
+        self.key = key if key else random.choice(keys)
+        self.mode = mode if mode else random.choice(modes)
+        self.rhythm = rhythm if rhythm else \
+                      Rhythm(random.choice(beats),
+                             random.randint(60, 240))
+                             
         self.units_mem = deque(maxlen = max_mem) 
         self.cur_seq = None
+        self.beat = None
 
 
     ''' chooses a unit, being a note or a pattern '''
@@ -49,14 +57,14 @@ class Mind:
                 self.cur_seq = None
                 
         else:
-            unit = self.choose_any_unit()
+            unit = self.choose_rand_unit()
             self.cur_seq = self.choose_seq(unit)
             
         self.units_mem.append(unit)
 
         return unit
 
-    def choose_any_unit(self):
+    def choose_rand_unit(self):
         # choose random note (pitch, octave, value, volume, touch_type)
         rand = random.normalvariate(0.4, 0.15)
         octave = (abs(int(rand * 10)) + 1) % 9
@@ -75,6 +83,14 @@ class Mind:
                            random.choice(seq_span),
                            random.choice(keys),
                            random.choice(modes),
+                           random.choice(directions),
                            first_note)
 
             return seq
+
+    def start_beat(self):
+        self.rhythm.start()
+        
+
+    def stop_beat(self):
+        self.rhythm.running = False

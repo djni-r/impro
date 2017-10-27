@@ -4,14 +4,14 @@ scale,major 1,3,5,6,8,10,12
 scale,minor 1,3,4,6,8,9,11
 scale,mixolydian 1,3,5,6,8,10,11
 
-triad_arpeggio,major 1,5,8
-triad_arpeggio,minor 1,4,8
-triad_arpeggio,mixolydian 1,5,8
+triad-arpeggio,major 1,5,8
+triad-arpeggio,minor 1,4,8
+triad-arpeggio,mixolydian 1,5,8
 
-sixth_arpeggio,major 1,5,8,10
-sixth_arpeggio,minor 1,4,8,9
-sixth_arpeggio,mixolydian 1,5,8,10
+sixth-arpeggio,major 1,5,8,10
+sixth-arpeggio,minor 1,4,8,9
+sixth-arpeggio,mixolydian 1,5,8,10
 
-seventh_arpeggio,major 1,5,8,12
-seventh_arpeggio,minor 1,4,8,11
-seventh_arpeggio,mixolydian 1,5,8,11
+seventh-arpeggio,major 1,5,8,12
+seventh-arpeggio,minor 1,4,8,11
+seventh-arpeggio,mixolydian 1,5,8,11
