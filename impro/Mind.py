@@ -7,30 +7,38 @@ from Rhythm import Rhythm
 from Sequence import Sequence
 from objects import *
 from unit import *
-from load import mapping
+from load_mapping import mapping
 
 
 class Mind:
     def __init__(self, key = None, mode = None,
-                 rhythm = None, max_mem = None):
+                 beat = (4,4), tempo = 60, max_mem = None,
+                 max_octave = 5, min_octave = 1):
 
         self.key = key if key else random.choice(keys)
         self.mode = mode if mode else random.choice(modes)
-        self.rhythm = rhythm if rhythm else \
-                      Rhythm(random.choice(beats),
-                             random.randint(60, 240))
+        self.rhythm = Rhythm(beat, tempo)
                              
         self.units_mem = deque(maxlen = max_mem) 
         self.cur_seq = None
-        self.beat = None
+        self.max_octave = max_octave
+        self.min_octave = min_octave
 
 
     ''' chooses a unit, being a note or a pattern '''
     def choose_unit(self):
 
         if self.cur_seq != None:
-            map_key = tuple([self.cur_seq.type, self.cur_seq.mode])
-            tones = mapping[map_key] # e.g. (1,3,5,8) out of 12 tones
+            
+            map_key = (self.cur_seq.type, self.cur_seq.mode)
+            tones = mapping[map_key] # e.g. (1,3,5,8) out of 12     
+
+            if (self.cur_seq.direction == -1):
+                tones = tones[::-1]
+            
+            rel_octave = int(self.cur_seq.cur_pos / len(tones))
+            abs_octave = self.cur_seq.first_unit.octave + rel_octave
+
             cur_tone = tones[self.cur_seq.cur_pos % len(tones)]
             # if sequence span is over one octave e.g. 1 3 5 8 1 3 5 8 1 3 5 8
             # first 1 3 5 8 is tone_octave 0, second 1 3 5 8 is tone_octave 1 etc.
@@ -39,22 +47,29 @@ class Mind:
             # if first pitch is G, then first_pitch_i = 10
             # if cur_tone is for ex. 5 (G,G#,A,A#,B) -> B (2 in the map 'keys')
             # (10 + 5 - 1) % 12 = 2
-            pitch_i = (first_pitch_i + cur_tone - 1) % len(keys)
-            pitch = keys[pitch_i]
+            pitch_i = first_pitch_i + cur_tone - 1
 
-            rel_octave = int(self.cur_seq.cur_pos / len(tones))
-            abs_octave = self.cur_seq.first_unit.octave + rel_octave
+            if pitch_i > len(keys):
+                abs_octave += 1
 
-            duration = self.cur_seq.first_unit.duration
-            volume = self.cur_seq.first_unit.volume
-            articulation = self.cur_seq.first_unit.articulation
-
-            unit = Note(pitch, abs_octave, duration, volume, articulation)
-            
-            self.cur_seq.incr_cur_pos()
-            
-            if self.cur_seq.finished:
+            if abs_octave > self.max_octave:
+#                self.cur_seq.direction *= -1
                 self.cur_seq = None
+                unit = self.choose_rand_unit()
+            else:
+                pitch_i %= len(keys)
+                pitch = keys[pitch_i]
+                
+                duration = self.cur_seq.first_unit.duration
+                volume = self.cur_seq.first_unit.volume
+                articulation = self.cur_seq.first_unit.articulation
+                
+                unit = Note(pitch, abs_octave, duration, volume, articulation)
+                
+                self.cur_seq.incr_cur_pos()
+            
+                if self.cur_seq.finished:
+                    self.cur_seq = None
                 
         else:
             unit = self.choose_rand_unit()
@@ -68,6 +83,7 @@ class Mind:
         # choose random note (pitch, octave, value, volume, touch_type)
         rand = random.normalvariate(0.4, 0.15)
         octave = (abs(int(rand * 10)) + 1) % 9
+#        octave = random.randint(2,5) #cello
         unit = Note(random.choice(keys),
                     octave,
                     random.choice(durations),
@@ -86,11 +102,13 @@ class Mind:
                            random.choice(directions),
                            first_note)
 
+            seq.incr_cur_pos()
             return seq
 
     def start_beat(self):
+        self.rhythm.setDaemon(True)
         self.rhythm.start()
-        
 
+    
     def stop_beat(self):
         self.rhythm.running = False
