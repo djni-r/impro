@@ -40,7 +40,8 @@ class Player:
 
         while True:
             unit = self.mind.choose_unit()
-            unit_data_i = (12 * (unit.octave - 1) + keys.index(unit.pitch)) % 60
+            unit_data_i = (12 * (unit.octave - 1) + keys.index(unit.pitch))
+            
             print(unit)
             sd.play(data[4 + unit_data_i], rate)
             

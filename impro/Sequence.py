@@ -15,18 +15,13 @@ class Sequence:
         self.mode = mode
         self.direction = direction 
         self.first_unit = first_unit
+        '''current position of the unit in the sequence'''
         self.cur_pos = 0
-        self._finished = False
+        self.finished = False
 
-    '''current position of the unit in the sequence'''
-
-
-    @property
-    def finished(self):
-        return self._finished
 
     def incr_cur_pos(self):
         self.cur_pos += 1
         if self.cur_pos > self.span:
-            self._finished = True
+            self.finished = True
 
