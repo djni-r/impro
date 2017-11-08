@@ -15,6 +15,10 @@ class Note:
 
 
 class Pattern:
-    def __init__(self, form, type):
+    def __init__(self, form, mode, first_note):
         self.form = form
-        self.type = type
+        self.mode = mode
+        self.first_note
+
+    def __str__(self):
+        return "{} {} {}".format(self.mode, self.form, self.first_note)

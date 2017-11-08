@@ -1,5 +1,6 @@
 import random
 import time
+import fractions
 import sounddevice as sd
 
 from Mind import Mind
@@ -10,7 +11,8 @@ class Player:
 
     def __init__(self):
         self.mind = Mind()
-
+        
+        
     def play_cello(self):
         from load_cello import data, rate
                 
@@ -45,12 +47,13 @@ class Player:
             print(unit)
             sd.play(data[4 + unit_data_i], rate)
             
-            time.sleep(self.mind.rhythm.sec_per_beat *
-                       unit.duration[0] / unit.duration[1])
+            time.sleep(self.mind.rhythm.sec_per_beat * float(unit.duration))
             
 #            if (random.random() < 0.01):
 #                self.mind.stop_beat()
 #                break
+
+
             
 
 
