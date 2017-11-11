@@ -17,10 +17,8 @@ seq_types = ("scale", "triad", "sixth", "seventh", "ninth")
 seq_span = range(10)
 directions = (1, -1) # ascending, descending
 
-durations = [Fraction(1,1), Fraction(1,2), Fraction(1,3),
-             Fraction(1,4), Fraction(1,6), Fraction(1,8),
-             Fraction(1,12), Fraction(1,16)]
+durations = ["1/1", "1/2", "1/3", "1/4", "1/6", "1/8", "1/12", "1/16"]
 
-durations_in_seq = [Fraction(1,6),Fraction(1,8),Fraction(1,12),Fraction(1,16)]
+durations_in_seq = ["1/6", "1/8", "1/12", "1/16"]
 volumes = range(8)
 articulations = ("staccato", "sforzato", "legato")

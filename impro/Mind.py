@@ -100,6 +100,7 @@ class Mind:
         seq = Sequence(_type, span, key, mode, direction, first_unit)
         seq.incr_cur_pos()
 
+        print(seq)
         return seq
 
     

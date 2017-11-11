@@ -1,13 +1,11 @@
 import csv
-
-
+        
 def combine(tone_pos, tones):
     for pos in tone_pos:
         yield tones[pos]
-
         
 mapping = {}
-with open('resources/modes.csv') as modes, open('resources/sequences.csv') as seqs:
+with open('impro/resources/modes.csv') as modes, open('impro/resources/sequences.csv') as seqs:
     seqs_reader = csv.DictReader(seqs, delimiter = ' ')
     modes_reader = list(csv.DictReader(modes, delimiter = ' '))
         
@@ -21,5 +19,4 @@ with open('resources/modes.csv') as modes, open('resources/sequences.csv') as se
                 i for i in combine(tone_pos, tones))
 
 
-    
 

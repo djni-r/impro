@@ -1,3 +1,5 @@
+import copy
+
 class Sequence:
     '''
     Describes sequence of units (notes or patterns)
@@ -15,7 +17,7 @@ class Sequence:
         self.mode = mode
         self.direction = direction 
         self.first_unit = first_unit
-        self.cur_unit = first_unit
+        self.cur_unit = copy.copy(first_unit)
         '''current position of the unit in the sequence'''
         self.cur_pos = 0
         self.finished = False
@@ -29,4 +31,12 @@ class Sequence:
 
     def next(self):
         pass
+
+    
+    def __str__(self):
+        return "{} {} {}, \n{} units {} starting from {}\n".format(
+            self.key, self.mode, self._type,
+            self.span, "forward" if self.direction == 1 else "backwards",
+            self.first_unit)
+        
 

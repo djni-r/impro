@@ -1,7 +1,7 @@
 import random
 import time
-import fractions
 import sounddevice as sd
+from fractions import Fraction
 
 from Mind import Mind
 from objects import keys
@@ -47,7 +47,7 @@ class Player:
             print(unit)
             sd.play(data[4 + unit_data_i], rate)
             
-            time.sleep(self.mind.rhythm.sec_per_beat * float(unit.duration))
+            time.sleep(self.mind.rhythm.sec_per_beat * float(Fraction(unit.duration)))
             
 #            if (random.random() < 0.01):
 #                self.mind.stop_beat()
