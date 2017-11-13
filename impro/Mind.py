@@ -1,9 +1,11 @@
 import random
 import math
-import numpy as np
-from numpy import random as nprand
+import copy
 from collections import deque
 from threading import Thread
+
+import numpy as np
+from numpy import random as nprand
 
 from ProbCalc import ProbCalc
 from Listener import Listener
@@ -112,7 +114,8 @@ class Mind:
             tones = tones[::-1]
             
         rel_octave = int(self.cur_seq.cur_pos / len(tones))
-        abs_octave = self.cur_seq.first_unit.octave + rel_octave
+        abs_octave = self.cur_seq.first_unit.octave + \
+                     self.cur_seq.direction * rel_octave
 
         cur_tone = tones[self.cur_seq.cur_pos % len(tones)]
         # if sequence span is over one octave e.g. 1 3 5 8 1 3 5 8 1 3 5 8
@@ -135,7 +138,7 @@ class Mind:
             pitch_i %= len(keys)
             pitch = keys[pitch_i]
                                 
-            unit = self.cur_seq.cur_unit
+            unit = copy.copy(self.cur_seq.cur_unit)
             unit.pitch = pitch
             unit.octave = abs_octave
 

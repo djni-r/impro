@@ -1,3 +1,4 @@
+import copy
 from fractions import Fraction
 
 class Note:
@@ -28,7 +29,8 @@ class Note:
         else:
             return False
 
-        
+
+    
     def __copy__(self):
         return Note(self.pitch, self.octave, self.duration,
                     self.volume, self.articulation)
