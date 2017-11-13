@@ -18,7 +18,7 @@ class MindTest(unittest.TestCase):
             Note("B", 4, "1/4")
         ]
 
-    @unittest.skip("ok")
+    #@unittest.skip("ok")
     def test_choose_unit_with_seq(self):
         self.mind.cur_seq = Sequence("scale", 7, "C", "major", 1,
                                      Note("C", 4, "1/4"))
@@ -34,7 +34,7 @@ class MindTest(unittest.TestCase):
 
     def test_choose_unit_seq_backwards(self):
         self.mind.cur_seq = Sequence("scale", 7, "C", "major", -1,
-                                     Note("B", 4, 1/4))
+                                     Note("B", 4, "1/4"))
 
         result = []
         for i in range(7):

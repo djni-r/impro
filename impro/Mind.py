@@ -112,31 +112,33 @@ class Mind:
 
         if (self.cur_seq.direction == -1):
             tones = tones[::-1]
-            
+
+        # if sequence span is over more than one octave e.g. 1 3 5 8 1 3 5 8 1 3 5 8
+        # first 1 3 5 8 is rel_octave 0, second 1 3 5 8 is rel_octave 1 etc.
         rel_octave = int(self.cur_seq.cur_pos / len(tones))
         abs_octave = self.cur_seq.first_unit.octave + \
                      self.cur_seq.direction * rel_octave
 
-        cur_tone = tones[self.cur_seq.cur_pos % len(tones)]
-        # if sequence span is over one octave e.g. 1 3 5 8 1 3 5 8 1 3 5 8
-        # first 1 3 5 8 is tone_octave 0, second 1 3 5 8 is tone_octave 1 etc.
-        first_pitch_i = keys.index(self.cur_seq.first_unit.pitch)
+        # xxx_i stands for index of xxx 
         # from ("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")
         # if first pitch is G, then first_pitch_i = 10
-        # if cur_tone is for ex. 5 (G,G#,A,A#,B) -> B (2 in the map 'keys')
+        # if cur_tone is for ex. 5 from (G,G#,A,A#,B) -> B (2 in the map 'keys')
         # (10 + 5 - 1) % 12 = 2
-        pitch_i = first_pitch_i + cur_tone - 1
-
-        if pitch_i > len(keys):
-            abs_octave += 1
-
+        first_pitch_i = keys.index(self.cur_seq.first_unit.pitch)        
+        first_tone_i = tones.index(first_pitch_i + 1)
+        cur_tone_i = first_tone_i + self.cur_seq.cur_pos
+        
+        if cur_tone_i >= len(tones):
+            abs_octave += self.cur_seq.direction # 1 or -1
+            cur_tone_i %= len(tones)
+            
         if abs_octave > self.max_octave:
             # self.cur_seq.direction *= -1
             self.cur_seq.finished = True
             unit = self.choose_unit() # recursion here!
         else:
-            pitch_i %= len(keys)
-            pitch = keys[pitch_i]
+            cur_tone = tones[cur_tone_i]
+            pitch = keys[cur_tone - 1]
                                 
             unit = copy.copy(self.cur_seq.cur_unit)
             unit.pitch = pitch
