@@ -66,7 +66,8 @@ class Mind:
 
         
     ''' private functions '''
-    
+
+    # not used
     def __consider_outer(self):
         return False
         
@@ -91,13 +92,13 @@ class Mind:
     
     def __choose_seq(self, first_unit):
         # choose sequence
-        _type = random.choice(seq_types)
-        span = random.choice(seq_span)
-        key = random.choice(keys)
-        mode = random.choice(modes)
-        direction = random.choice(directions)
+        _type = nprand.choice(seq_types, p=seq_types_probs)
+        span = nprand.choice(seq_span, p=seq_span_probs)
+        key = nprand.choice(keys, p=seq_keys_probs)
+        mode = nprand.choice(modes, p=seq_modes_probs)
+        direction = nprand.choice(directions, p=seq_dir_probs)
         # choose duration of the first unit, i.e. dur for all units in seq
-        first_unit.duration = random.choice(durations_in_seq)
+        first_unit.duration = nprand.choice(durations_in_seq)
 
         seq = Sequence(_type, span, key, mode, direction, first_unit)
         seq.incr_cur_pos()
@@ -119,13 +120,16 @@ class Mind:
         abs_octave = self.cur_seq.first_unit.octave + \
                      self.cur_seq.direction * rel_octave
 
-        # xxx_i stands for index of xxx 
+        # xxx_i stands for 'index of xxx' 
         # from ("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")
         # if first pitch is G, then first_pitch_i = 10
         # if cur_tone is for ex. 5 from (G,G#,A,A#,B) -> B (2 in the map 'keys')
         # (10 + 5 - 1) % 12 = 2
         first_pitch_i = keys.index(self.cur_seq.first_unit.pitch)        
-        first_tone_i = tones.index(first_pitch_i + 1)
+        # quick fix for not having first tone among the tones
+        first_tone_i = tones.index(first_pitch_i + 1) if first_pitch_i + 1 in tones \
+                       else tones[0]
+        
         cur_tone_i = first_tone_i + self.cur_seq.cur_pos
         
         if cur_tone_i >= len(tones):
