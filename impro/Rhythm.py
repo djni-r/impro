@@ -2,11 +2,11 @@ import time
 from threading import Thread
 
 class Rhythm(Thread):
-    def __init__(self, beat, tempo):
+    def __init__(self, beat, bpm):
         Thread.__init__(self)
         self.beat = beat
-        self.tempo = tempo #bpm 60-240
-        self.sec_per_beat = 60/self.tempo
+        self.bpm = bpm 
+        self.sec_per_beat = 60.0/self.bpm
         self.beat_count = 1
         self.bar_count = 0
         self.running = False

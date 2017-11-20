@@ -5,9 +5,15 @@ class ProbCalc:
     def __init__(self, listener):
         self.listener = listener
         
-    def seq_prob(self):
-        prob = 0.2
-        return prob
+    ''' 
+    weights is a sequence of weights not summed to 1
+    returns seq summed to 1
+    '''
+    def calc_prob_from_weights(self, weights):
+        denom = sum(weights)/len(weights)
+        probs = map(lambda x: x/denom/len(weights), weights)
+
+        return probs
 
 
     def keys_probs(self):
@@ -26,16 +32,29 @@ class ProbCalc:
             return calc_probs_from_weights(keys_weights.values())
 
 
-    ''' 
-    weights is a sequence of weights not summed to 1
-    returns seq summed to 1
-    '''
-    def calc_prob_from_weights(self, weights):
-        denom = sum(weights)/len(weights)
-        probs = map(lambda x: x/denom/len(weights), weights)
+    def pat_form_probs(self):
+        return None
 
-        return probs
-            
+
+    def pat_mode_probs(self):
+        return None
+
+    
+    def pattern_prob(self):
+        return 0.5
+
+    
+    def pause_prob(self):
+        return 0.1
+
+
+    def pause_dur_probs(self):
+        return None
+        
+    
+    def seq_prob(self):
+        return 0.2
+
             
             
         

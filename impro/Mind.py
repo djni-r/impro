@@ -17,14 +17,14 @@ from unit import *
 from load_mapping import mapping
 
 
-class Mind:
+class Mind(object):
     def __init__(self, key = None, mode = None,
-                 beat = (4,4), tempo = 60, max_mem = None,
+                 beat = (4,4), bpm = 60, max_mem = None,
                  max_octave = 5, min_octave = 1):
 
         self.key = key if key else random.choice(keys)
         self.mode = mode if mode else random.choice(modes)
-        self.rhythm = Rhythm(beat, tempo)
+        self.rhythm = Rhythm(beat, bpm)
                              
         self.units_mem = deque(maxlen = max_mem) 
         self.max_octave = max_octave
@@ -48,9 +48,10 @@ class Mind:
             self.cur_seq.incr_cur_pos()
         else:
             unit = self.__choose_rand_unit(self.__consider_outer())
-            if (random.random() < self.prob_calc.seq_prob()):
+            if not isinstance(unit, Pause) and \
+            random.random() < self.prob_calc.seq_prob():
                 self.cur_seq = self.__choose_seq(unit)
-            
+
         self.units_mem.append(unit)
 
         return unit
@@ -76,6 +77,10 @@ class Mind:
         if considering_outer:
             pass
 
+        if random.random() < self.prob_calc.pause_prob():
+            duration = nprand.choice(durations, p=self.prob_calc.pause_dur_probs())
+            return Pause(duration)
+        
         # choose random note (pitch, octave, value, volume, touch_type)
         octaves = np.arange(self.min_octave, self.max_octave+1)
         _octave_probs = octave_probs[self.min_octave-1:self.max_octave]
@@ -86,6 +91,15 @@ class Mind:
         articul = nprand.choice(articulations, p=arts_probs)
 
         unit = Note(key, octave, duration, volume, articul)
+
+        if random.random() < self.prob_calc.pattern_prob():
+            pat_form = nprand.choice(pattern_forms,
+                                     p=self.prob_calc.pat_form_probs())
+            pat_mode = nprand.choice(pattern_modes,
+                                     p=self.prob_calc.pat_mode_probs())
+
+            pat_units = self.__prepare_pattern_units(pat_form, pat_mode, unit)
+            unit = Pattern(pat_form, pat_mode, pat_units)     
 
         return unit
 
@@ -110,15 +124,15 @@ class Mind:
     def __next_in_seq(self):
         map_key = (self.cur_seq._type, self.cur_seq.mode)
         tones = mapping[map_key] # e.g. (1,3,5,8) out of 12     
-
+        cur_unit = copy.copy(self.cur_seq.cur_unit)
+        
         if (self.cur_seq.direction == -1):
             tones = tones[::-1]
 
         # if sequence span is over more than one octave e.g. 1 3 5 8 1 3 5 8 1 3 5 8
         # first 1 3 5 8 is rel_octave 0, second 1 3 5 8 is rel_octave 1 etc.
         rel_octave = int(self.cur_seq.cur_pos / len(tones))
-        abs_octave = self.cur_seq.first_unit.octave + \
-                     self.cur_seq.direction * rel_octave
+        abs_octave = cur_unit.octave + self.cur_seq.direction * rel_octave
 
         # xxx_i stands for 'index of xxx' 
         # from ("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")
@@ -131,23 +145,42 @@ class Mind:
                        else tones[0]
         
         cur_tone_i = first_tone_i + self.cur_seq.cur_pos
-        
-        if cur_tone_i >= len(tones):
-            abs_octave += self.cur_seq.direction # 1 or -1
-            cur_tone_i %= len(tones)
+        abs_octave += cur_tone_i/len(tones) * self.cur_seq.direction # 1 or -1
+        cur_tone_i %= len(tones)
             
         if abs_octave > self.max_octave:
             # self.cur_seq.direction *= -1
             self.cur_seq.finished = True
-            unit = self.choose_unit() # recursion here!
+            cur_unit = self.choose_unit() # recursion here!
         else:
             cur_tone = tones[cur_tone_i]
             pitch = keys[cur_tone - 1]
                                 
-            unit = copy.copy(self.cur_seq.cur_unit)
-            unit.pitch = pitch
-            unit.octave = abs_octave
+            cur_unit.pitch = pitch
+            cur_unit.octave = abs_octave
 
-        return unit
+        if isinstance(cur_unit, Pattern):
+            pat_units = self.__prepare_pattern_units(cur_unit.form,
+                                         cur_unit.mode,
+                                         cur_unit.units[0])
+            for i, unit in enumerate(cur_unit.units):
+                unit = pat_units[i]
+
+        return cur_unit
 
     
+    def __prepare_pattern_units(self, form, mode, base_unit):
+        tones = patterns_to_tones[(form,mode)]
+        key_i = keys.index(base_unit.pitch)
+        pat_units = []
+        for tone in tones:
+            unit = copy.copy(base_unit)
+            new_key_i = key_i + tone - 1
+            unit.octave += new_key_i/12
+            if unit.octave > self.max_octave:
+                break
+            
+            unit.pitch = keys[new_key_i%12]
+            pat_units.append(unit)
+
+        return pat_units

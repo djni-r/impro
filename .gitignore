@@ -9,3 +9,5 @@ impro/resources/*_sounds
 impro/*.pyc
 *~
 */*.pyc
+vendor/cello
+vendor/resources
