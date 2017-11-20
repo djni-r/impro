@@ -35,5 +35,6 @@ directions = [1, -1] # ascending, descending
 durations = ["2/1", "1/1", "1/2", "1/3", "1/4", "1/6", "1/8", "1/12", "1/16"]
 
 durations_in_seq = ["1/8", "1/12", "1/16"]
+durations_in_pat = ["1/16"]
 volumes = range(8)
 articulations = ["staccato", "sforzato", "legato"]

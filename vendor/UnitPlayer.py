@@ -18,7 +18,7 @@ class UnitPlayer(object):
         
     def play_note(self, note):
         
-        note_data_i = (12 * (note.octave - 1) + self.keys.index(note.pitch))
+        note_data_i = (12 * (note.octave - 1) + self.keys.index(note.key))
         sd.play(data[4 + note_data_i], rate)
         if self.printout:
             print(note)

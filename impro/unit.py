@@ -3,8 +3,8 @@ from fractions import Fraction
 
 
 class Note(object):
-    def __init__(self, pitch, octave, duration, volume = None, articulation = None):
-        self.pitch = pitch
+    def __init__(self, key, octave, duration, volume = None, articulation = None):
+        self.key = key
         self.octave = octave
         self.duration = Fraction(duration)
         self.volume = volume
@@ -16,7 +16,7 @@ class Note(object):
 
         
     def __str__(self):
-        return "{pitch:2}{octave}-{dur}".format(pitch = self.pitch, 
+        return "{key:2}{octave}-{dur}".format(key = self.key, 
                                                 octave = self.octave, 
                                                 dur = self.duration, 
                                                 vol = self.volume, 
@@ -25,7 +25,7 @@ class Note(object):
     
     def __eq__(self, other):      
         if other != None \
-        and self.pitch == other.pitch \
+        and self.key == other.key \
         and self.octave == other.octave \
         and self.duration == other.duration \
         and self.volume == other.volume \
@@ -36,7 +36,7 @@ class Note(object):
 
     
     def __copy__(self):
-        return Note(self.pitch, self.octave, self.duration,
+        return Note(self.key, self.octave, self.duration,
                     self.volume, self.articulation)
         
 
@@ -45,7 +45,7 @@ class Pattern(object):
     
     def __init__(self, form, mode, units):
         Pattern.octave = BaseUnitDescr("octave", units[0])
-        Pattern.pitch = BaseUnitDescr("pitch", units[0])
+        Pattern.key = BaseUnitDescr("key", units[0])
         
         self.form = form
         self.mode = mode
@@ -59,8 +59,30 @@ class Pattern(object):
         #vendor.play_pattern(self)
         
 
+    def __eq__(self, other):
+        if other != None \
+        and self.form == other.form \
+        and self.mode == other.mode \
+        and self.units == other.units:
+            return True
+        else:
+            return False
+        
+
+    def __copy__(self):
+        units = []
+        for unit in self.units:
+            units.append(unit.__copy__())
+
+        return Pattern(self.form, self.mode, units)
+
+    
     def __str__(self):
-        return "Pattern {} {} {}".format(self.mode, self.form, self.units)
+        content = "Pattern {} {} units: ".format(self.mode, self.form)
+        for unit in self.units:
+            content += str(unit) + " "
+
+        return content
 
     
 

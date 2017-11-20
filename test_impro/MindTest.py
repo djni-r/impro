@@ -2,7 +2,7 @@ import unittest
 
 from impro.Mind import Mind
 from impro.Sequence import Sequence
-from impro.unit import Note
+from impro.unit import Note, Pattern
 
 class MindTest(unittest.TestCase):
 
@@ -43,6 +43,45 @@ class MindTest(unittest.TestCase):
 
         print(list(str(n) for n in result))
         self.assertEqual(result, self.c_scale[::-1])
+
+
+    def test_choose_unit_pattern(self):
+        pc = self.mind.prob_calc
+        pc.pattern_prob = lambda: 1
+        pc.pat_form_probs = lambda: [0,1,0,0,0,0,0]
+        pc.pat_mode_probs = lambda: [1,0]
+        pc.seq_prob = lambda: 1
+
+        self.mind.cur_seq = Sequence("scale", 7, "C", "major", 1,
+                                     Pattern("terza", "major",
+                                             [self.c_scale[0], self.c_scale[2]])
+        )
+        self.mind.cur_seq.cur_pos += 1
+        unit = self.mind.choose_unit()
+        print unit
+        
+        expected = Pattern("terza", "major", [Note("D",4,"1/4"),Note("Gb",4,"1/4")])
+        self.assertEqual(expected, unit)
+
+
+    def test_choose_unit_pattern_max(self):
+        pc = self.mind.prob_calc
+        pc.pattern_prob = lambda: 1
+        pc.pat_form_probs = lambda: [0,0,0,0,0,1,0]
+        pc.pat_mode_probs = lambda: [0,1]
+        pc.seq_prob = lambda: 1
+
+        self.mind.cur_seq = Sequence("scale", 7, "C", "major", 1,
+                                     Pattern("septima", "minor",
+                                             [Note("C",5,"1/4"), Note("B",5,"1/4")]
+                                     )
+        )
+        self.mind.cur_seq.cur_pos += 1
+        unit = self.mind.choose_unit()
+        print unit
+
+        expected = Pattern("septima", "minor", [Note("D",5,"1/4")])
+        self.assertEqual(expected, unit)
         
 #if __name__ == '__main__':
 #    unittest.main(verbosity = 2)
