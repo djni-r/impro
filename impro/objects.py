@@ -32,9 +32,9 @@ seq_types = ["scale", "triad", "sixth", "seventh", "ninth"]
 seq_span = list(range(10))
 directions = [1, -1] # ascending, descending
 
-durations = ["2/1", "1/1", "1/2", "1/3", "1/4", "1/6", "1/8", "1/12", "1/16"]
+durations = ["2/1", "1/1", "1/2", "1/3", "1/4", "1/6", "1/8", "1/12", "1/16", "1/32"]
 
-durations_in_seq = ["1/8", "1/12", "1/16"]
-durations_in_pat = ["1/16"]
+durations_in_seq = ["1/8", "1/12", "1/16", "1/32"]
+durations_in_pat = ["1/16", "1/32"]
 volumes = range(8)
 articulations = ["staccato", "sforzato", "legato"]

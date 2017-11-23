@@ -1,6 +1,7 @@
 import random
 import math
 import copy
+import itertools
 from collections import deque
 from threading import Thread
 
@@ -42,9 +43,14 @@ class Mind(object):
         
     ''' chooses a unit, being a note or a pattern to be played'''
     def choose_unit(self):
-
-        if self.cur_seq != None and not self.cur_seq.finished:
+        if random.random() < self.prob_calc.repeat_prob() \
+        and len(self.units_mem) > 0:
+            notes_count = self.prob_calc.repeat_count(len(self.units_mem))
+            pat = Pattern([self.units_mem[i] for i in range(-1*notes_count, 0)])
+            return pat
+        elif self.cur_seq != None and not self.cur_seq.finished:
             unit = self.__next_in_seq()
+            #self.cur_seq.cur_unit = unit
             self.cur_seq.incr_cur_pos()
         else:
             unit = self.__choose_rand_unit(self.__consider_outer())
@@ -100,7 +106,7 @@ class Mind(object):
                                      p=self.prob_calc.pat_mode_probs())
 
             pat_units = self.__prepare_pattern_units(pat_form, pat_mode, unit)
-            unit = Pattern(pat_form, pat_mode, pat_units)     
+            unit = Pattern(pat_units, pat_form, pat_mode)     
 
         return unit
 
@@ -130,16 +136,10 @@ class Mind(object):
         if (self.cur_seq.direction == -1):
             tones = tones[::-1]
 
-        # if sequence span is over more than one octave e.g. 1 3 5 8 1 3 5 8 1 3 5 8
-        # first 1 3 5 8 is rel_octave 0, second 1 3 5 8 is rel_octave 1 etc.
         rel_octave = int(self.cur_seq.cur_pos / len(tones))
         abs_octave = cur_unit.octave + self.cur_seq.direction * rel_octave
 
         # xxx_i stands for 'index of xxx' 
-        # from ("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")
-        # if first key is G, then first_key_i = 10
-        # if cur_tone is for ex. 5 from (G,G#,A,A#,B) -> B (2 in the map 'keys')
-        # (10 + 5 - 1) % 12 = 2
         first_key_i = keys.index(self.cur_seq.first_unit.key)        
         # quick fix for not having first tone among the tones
         first_tone_i = tones.index(first_key_i + 1) if first_key_i + 1 in tones \
@@ -149,7 +149,8 @@ class Mind(object):
         abs_octave += cur_tone_i/len(tones) * self.cur_seq.direction # 1 or -1
         cur_tone_i %= len(tones)
             
-        if abs_octave > self.max_octave:
+        if abs_octave > self.max_octave \
+        or abs_octave < self.min_octave:
             # self.cur_seq.direction *= -1
             self.cur_seq.finished = True
             cur_unit = self.choose_unit() # recursion here!
@@ -160,12 +161,12 @@ class Mind(object):
             cur_unit.key = key
             cur_unit.octave = abs_octave
 
-        if isinstance(cur_unit, Pattern):
-            pat_units = self.__prepare_pattern_units(cur_unit.form,
-                                         cur_unit.mode,
-                                         cur_unit.units[0])
-            #for i in range(len(pat_units)):
-            cur_unit.units = pat_units
+            if isinstance(cur_unit, Pattern):
+                pat_units = self.__prepare_pattern_units(cur_unit.form,
+                                                         cur_unit.mode,
+                                                         cur_unit.units[0])
+                #for i in range(len(pat_units)):
+                cur_unit.units = pat_units
 
         return cur_unit
 

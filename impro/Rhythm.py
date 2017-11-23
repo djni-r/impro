@@ -17,10 +17,10 @@ class Rhythm(Thread):
 
         while self.running:
             if self.beat_count == 1:
-                print("_"+str(self.bar_count))
+                #print("_"+str(self.bar_count))
                 self.bar_count += 1
                 
-            print(self.beat_count)
+            #print(self.beat_count)
             
             time.sleep(self.sec_per_beat)
             self.beat_count += 1

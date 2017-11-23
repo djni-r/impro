@@ -1,7 +1,13 @@
 import time
+from numpy import random as nprand
+
 from objects import keys
 
 class ProbCalc:
+    MAX_SEC_INTERVAL = 10
+    KEY_WEIGHT_INCR = 10
+    MAX_REPEAT_COUNT = 5
+    
     def __init__(self, listener):
         self.listener = listener
         
@@ -22,13 +28,13 @@ class ProbCalc:
                         "Ab":1, "A":1, "Bb":1, "B":1}
 
         now = time.time()
-        MAX_SEC_INTERVAL = 10
+        
         if len(self.listener.pitches) > 0 \
-        and self.listener.pitches[-1].time - now > MAX_SEC_INTERVAL:        
+        and self.listener.pitches[-1].time - now > ProbCalc.MAX_SEC_INTERVAL:        
             key_i = self.listener.pitches[-1].pitch % 12
             key = keys[key_i]
             
-            keys_weights[key] += 5
+            keys_weights[key] += ProbCalc.KEY_WEIGHT_INCR
             return calc_probs_from_weights(keys_weights.values())
 
 
@@ -41,7 +47,7 @@ class ProbCalc:
 
     
     def pattern_prob(self):
-        return 0.5
+        return 0.2
 
     
     def pause_prob(self):
@@ -51,6 +57,17 @@ class ProbCalc:
     def pause_dur_probs(self):
         return None
         
+
+    def repeat_prob(self):
+        return 0.1
+
+
+    def repeat_count(self, mem_len):
+        r = range(1, ProbCalc.MAX_REPEAT_COUNT + 1 \
+              if ProbCalc.MAX_REPEAT_COUNT < mem_len \
+                  else mem_len + 1)
+        return nprand.choice(r)
+
     
     def seq_prob(self):
         return 0.2

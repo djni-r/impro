@@ -43,7 +43,7 @@ class Note(object):
 
 class Pattern(object):
     
-    def __init__(self, form, mode, units):
+    def __init__(self, units, form = None, mode = None):
         Pattern.octave = BaseUnitDescr("octave", units[0])
         Pattern.key = BaseUnitDescr("key", units[0])
         
@@ -74,7 +74,7 @@ class Pattern(object):
         for unit in self.units:
             units.append(unit.__copy__())
 
-        return Pattern(self.form, self.mode, units)
+        return Pattern(units, self.form, self.mode)
 
     
     def __str__(self):
