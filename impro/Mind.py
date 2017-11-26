@@ -19,10 +19,10 @@ from load_mapping import mapping
 
 
 class Mind(object):
-    def __init__(self, key = None, mode = None,
+    def __init__(self, instrument = "piano", key = None, mode = None,
                  beat = (4,4), bpm = 60, max_mem = None,
                  max_octave = 5, min_octave = 1):
-
+        self.instrument = instrument
         self.key = key if key else random.choice(keys)
         self.mode = mode if mode else random.choice(modes)
         self.rhythm = Rhythm(beat, bpm)
@@ -37,7 +37,7 @@ class Mind(object):
         self.listener = Listener()
         self.listener.setDaemon(True)
         self.listener.start()
-        self.prob_calc = ProbCalc(self.listener)
+        self.prob_calc = ProbCalc(self.listener, self.instrument)
         
 
         
@@ -84,22 +84,23 @@ class Mind(object):
             pass
 
         if random.random() < self.prob_calc.pause_prob():
-            duration = nprand.choice(durations, p=self.prob_calc.pause_dur_probs())
+            duration = self.prob_calc.durs_probs("pause")
             return Pause(duration)
         
         # choose random note (key, octave, value, volume, touch_type)
         octaves = np.arange(self.min_octave, self.max_octave+1)
         _octave_probs = octave_probs[self.min_octave-1:self.max_octave]
+        _octave_probs = map(lambda i: i * 1.0/sum(_octave_probs), _octave_probs)
         octave = nprand.choice(octaves, p=_octave_probs)
         key = nprand.choice(keys, p=self.prob_calc.keys_probs())
-        duration = nprand.choice(durations, p=durs_probs)
+        duration = self.prob_calc.durs_probs()
         volume = nprand.choice(volumes, p=vols_probs)
         articul = nprand.choice(articulations, p=arts_probs)
 
         unit = Note(key, octave, duration, volume, articul)
 
         if random.random() < self.prob_calc.pattern_prob():
-            unit.duration = nprand.choice(durations_in_pat)
+            unit.duration = self.prob_calc.durs_probs("pattern")
             pat_form = nprand.choice(pattern_forms,
                                      p=self.prob_calc.pat_form_probs())
             pat_mode = nprand.choice(pattern_modes,
@@ -119,7 +120,7 @@ class Mind(object):
         mode = nprand.choice(modes, p=seq_modes_probs)
         direction = nprand.choice(directions, p=seq_dir_probs)
         # choose duration of the first unit, i.e. dur for all units in seq
-        first_unit.duration = nprand.choice(durations_in_seq)
+        first_unit.duration = self.prob_calc.durs_probs("sequence")
 
         seq = Sequence(_type, span, key, mode, direction, first_unit)
         seq.incr_cur_pos()

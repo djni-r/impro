@@ -1,15 +1,17 @@
 import time
 from numpy import random as nprand
 
-from objects import keys
+from objects import keys, durations, durs_range_map
 
 class ProbCalc:
     MAX_SEC_INTERVAL = 10
     KEY_WEIGHT_INCR = 10
     MAX_REPEAT_COUNT = 5
     
-    def __init__(self, listener):
+    def __init__(self, listener, instrument):
         self.listener = listener
+        self.instrument = instrument
+        
         
     ''' 
     weights is a sequence of weights not summed to 1
@@ -20,6 +22,16 @@ class ProbCalc:
         probs = map(lambda x: x/denom/len(weights), weights)
 
         return probs
+
+
+    def durs_probs(self, unit_type = "note"):
+        if self.instrument == "cello":
+            map_key = "cello"
+        else:
+            map_key = unit_type
+        probs = durations[durations.index(durs_range_map[map_key][0]):\
+                          durations.index(durs_range_map[map_key][1])]
+        return nprand.choice(probs)           
 
 
     def keys_probs(self):
@@ -68,7 +80,11 @@ class ProbCalc:
                   else mem_len + 1)
         return nprand.choice(r)
 
-    
+
+    def seq_durs_probs(self):
+        if self.instrument == "cello":
+            return self.durs_probs()
+        
     def seq_prob(self):
         return 0.2
 
