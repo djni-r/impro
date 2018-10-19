@@ -1,6 +1,5 @@
 import time
 import random
-import sounddevice as sd
 from fractions import Fraction
 
 import load_sounds
@@ -12,6 +11,8 @@ class UnitPlayer(object):
              "Ab":8, "A":9, "Bb":10, "B":11 }
     
     def __init__(self, bpm, printout = True):
+        print("init UnitPlayer")
+        self.sd = __import__('sounddevice')
         self.bpm = bpm
         self.sec_per_beat = 60.0/self.bpm
         self.printout = printout
@@ -20,7 +21,7 @@ class UnitPlayer(object):
         
     def play_note(self, note):  
         note_data_i = (12 * (note.octave - 1) + self.keys[note.key])
-        sd.play(self.sounds.data[3 + note_data_i], self.sounds.rate)
+        self.sd.play(self.sounds.data[3 + note_data_i], self.sounds.rate)
         if self.printout:
             print(note)
             
@@ -43,6 +44,7 @@ class UnitPlayer(object):
 class CelloUnitPlayer(UnitPlayer):
 
     def __init__(self, bpm, printout = True):
+        self.sdc = __import__('sounddevice')
         self.bpm = bpm
         self.sec_per_beat = 60.0/self.bpm
         self.printout = printout
@@ -58,7 +60,7 @@ class CelloUnitPlayer(UnitPlayer):
                 list(self.sounds.data[map_key].keys()))]
 
         if sound is not None:
-            sd.play(sound, self.sounds.rate)
+            self.sdc.play(sound, self.sounds.rate)
             if self.printout:
                 print(note)
             time.sleep(self.sec_per_beat * 3 * float(Fraction(note.duration)))
@@ -67,13 +69,14 @@ class CelloUnitPlayer(UnitPlayer):
 class XyloUnitPlayer(UnitPlayer):
 
     def __init__(self, bpm, printout = True):
+        self.sdx = __import__('sounddevice')
         UnitPlayer.__init__(self, bpm)
         self.sounds = load_sounds.xylo()
 
 
     def play_note(self, note):
         map_key = note.key + str(note.octave)
-        sd.play(self.sounds.data[map_key], self.sounds.rate)
+        self.sdx.play(self.sounds.data[map_key], self.sounds.rate)
         if self.printout:
             print note
         time.sleep(self.sec_per_beat * float(Fraction(note.duration)))

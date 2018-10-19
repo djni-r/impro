@@ -8,14 +8,14 @@ from threading import Thread
 import numpy as np
 from numpy import random as nprand
 
-from ProbCalc import ProbCalc
-from Listener import Listener
-from Rhythm import Rhythm
-from Sequence import Sequence
-from probs import *
-from objects import *
-from unit import *
-from load_mapping import mapping
+from impro.ProbCalc import ProbCalc
+from impro.Listener import Listener
+from impro.Rhythm import Rhythm
+from impro.Sequence import Sequence
+from impro.probs import *
+from impro.objects import *
+from impro.unit import *
+from impro.load_mapping import mapping
 
 
 class Mind(object):

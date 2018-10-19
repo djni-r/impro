@@ -2,7 +2,7 @@ import time
 import math
 from numpy import random as nprand
 
-from objects import keys, durations, durs_range_map
+from impro.objects import keys, durations, durs_range_map
 
 class ProbCalc:
     MAX_SEC_INTERVAL = 10
