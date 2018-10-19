@@ -7,9 +7,9 @@ import load_sounds
 
 
 class UnitPlayer(object):
-    keys = ["C", "Db", "D", "Eb",
-            "E", "F", "Gb", "G",
-            "Ab", "A", "Bb", "B"]
+    keys = { "C":0, "Db":1, "D":2, "Eb":3,
+             "E":4, "F":5, "Gb":6, "G":7,
+             "Ab":8, "A":9, "Bb":10, "B":11 }
     
     def __init__(self, bpm, printout = True):
         self.bpm = bpm
@@ -19,8 +19,8 @@ class UnitPlayer(object):
         
         
     def play_note(self, note):  
-        note_data_i = (12 * (note.octave - 1) + self.keys.index(note.key))
-        sd.play(self.sounds.data[4 + note_data_i], self.sounds.rate)
+        note_data_i = (12 * (note.octave - 1) + self.keys[note.key])
+        sd.play(self.sounds.data[3 + note_data_i], self.sounds.rate)
         if self.printout:
             print(note)
             
@@ -62,3 +62,22 @@ class CelloUnitPlayer(UnitPlayer):
             if self.printout:
                 print(note)
             time.sleep(self.sec_per_beat * 3 * float(Fraction(note.duration)))
+
+
+class XyloUnitPlayer(UnitPlayer):
+
+    def __init__(self, bpm, printout = True):
+        UnitPlayer.__init__(self, bpm)
+        self.sounds = load_sounds.xylo()
+
+
+    def play_note(self, note):
+        map_key = note.key + str(note.octave)
+        sd.play(self.sounds.data[map_key], self.sounds.rate)
+        if self.printout:
+            print note
+        time.sleep(self.sec_per_beat * float(Fraction(note.duration)))
+
+        
+        
+        

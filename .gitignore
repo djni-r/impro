@@ -1,6 +1,8 @@
 .project
 .pydevproject
 */#*#
+*#
+*/*/#*#
 */*~
 */*/*~
 impro/__pycache__

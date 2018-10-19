@@ -21,7 +21,7 @@ from load_mapping import mapping
 class Mind(object):
     def __init__(self, instrument = "piano", key = None, mode = None,
                  beat = (4,4), bpm = 60, max_mem = None,
-                 max_octave = 5, min_octave = 1):
+                 max_octave = 5, max_tone = 12, min_octave = 1, min_tone = 1):
         self.instrument = instrument
         self.key = key if key else random.choice(keys)
         self.mode = mode if mode else random.choice(modes)
@@ -29,7 +29,9 @@ class Mind(object):
                              
         self.units_mem = deque(maxlen = max_mem) 
         self.max_octave = max_octave
+        self.max_tone = max_tone
         self.min_octave = min_octave
+        self.min_tone = min_tone
         
         self.cur_seq = None
         self.outer_unit = None
@@ -88,14 +90,18 @@ class Mind(object):
             return Pause(duration)
         
         # choose random note (key, octave, value, volume, touch_type)
-        octaves = np.arange(self.min_octave, self.max_octave+1)
-        _octave_probs = octave_probs[self.min_octave-1:self.max_octave]
-        _octave_probs = map(lambda i: i * 1.0/sum(_octave_probs), _octave_probs)
-        octave = nprand.choice(octaves, p=_octave_probs)
+        octave = self.prob_calc.oct_probs(self.min_octave, self.max_octave)
         key = nprand.choice(keys, p=self.prob_calc.keys_probs())
         duration = self.prob_calc.durs_probs()
         volume = nprand.choice(volumes, p=vols_probs)
         articul = nprand.choice(articulations, p=arts_probs)
+
+        # inefficient bug correction
+        if (octave == self.max_octave and keys_to_nums[key] > self.max_tone):
+            key = keys[self.max_tone-1]
+        elif (octave == self.min_octave and keys_to_nums[key] < self.min_tone):
+            key = keys[self.min_tone-1]
+            
 
         unit = Note(key, octave, duration, volume, articul)
 
@@ -149,14 +155,14 @@ class Mind(object):
         cur_tone_i = first_tone_i + self.cur_seq.cur_pos
         abs_octave += cur_tone_i/len(tones) * self.cur_seq.direction # 1 or -1
         cur_tone_i %= len(tones)
-            
-        if abs_octave > self.max_octave \
-        or abs_octave < self.min_octave:
+        cur_tone = tones[cur_tone_i]
+        
+        if (12*(abs_octave-1) + cur_tone > 12*(self.max_octave-1) + self.max_tone) \
+        or (12*(abs_octave-1) + cur_tone < 12*(self.min_octave-1) + self.min_tone):
             # self.cur_seq.direction *= -1
             self.cur_seq.finished = True
             cur_unit = self.choose_unit() # recursion here!
         else:
-            cur_tone = tones[cur_tone_i]
             key = keys[cur_tone - 1]
                                 
             cur_unit.key = key

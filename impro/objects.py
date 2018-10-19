@@ -32,7 +32,8 @@ seq_types = ["scale", "triad", "sixth", "seventh", "ninth"]
 seq_span = list(range(10))
 directions = [1, -1] # ascending, descending
 
-durations = ["2/1", "1/1", "1/2", "1/3", "1/4", "1/6", "1/8", "1/12", "1/16", "1/24",  "1/32"]
+durations = [ "2/1", "1/1", "1/2", "1/3", "1/4", "1/6",
+              "1/8", "1/12", "1/16", "1/24",  "1/32" ]
 
 durs_range_map = { "cello" : ("2/1", "1/8"),
                    "note" : ("2/1", "1/32"),

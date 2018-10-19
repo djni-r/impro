@@ -33,3 +33,13 @@ def cello():
 
     return _sounds(data, rate)
 
+
+def xylo():
+    data = {}
+    rate = sf.read("vendor/resources/xylo_sounds/Xylophone.hardrubber.ff.A4.stereo.aif")[1]
+
+    for name in os.listdir("vendor/resources/xylo_sounds"):
+        key = name.split('.')[3]
+        data[key] = sf.read("vendor/resources/xylo_sounds/"+name)[0]
+
+    return _sounds(data, rate)

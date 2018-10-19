@@ -1,4 +1,5 @@
 import time
+import math
 from numpy import random as nprand
 
 from objects import keys, durations, durs_range_map
@@ -50,6 +51,19 @@ class ProbCalc:
             return calc_probs_from_weights(keys_weights.values())
 
 
+    def oct_probs(self, min_oct, max_oct):
+        count = max_oct - min_oct + 1
+        mu = min_oct + count/2.0
+        sig = count/(3*2.0)
+        octave = int(round(nprand.normal(mu, sig)))
+        if octave < min_oct:
+            octave = min_oct
+        elif octave > max_oct:
+            octave = max_oct
+
+        return octave
+        
+        
     def pat_form_probs(self):
         return None
 
