@@ -32,8 +32,6 @@ def play(instrument = "piano", key = None, mode = None,
         unit = mind.choose_unit()
         unit.play(unit_player)
 
-def play2(x):
-    print(x)
     
 if __name__ == "__main__":
     argparser = ArgumentParser()
@@ -41,10 +39,10 @@ if __name__ == "__main__":
     argparser.add_argument("instrument", choices=["piano","cello","xylo"],
                            nargs="+", default="piano")
     args = argparser.parse_args()
-    with closing(Pool(max_instr)) as p:
+    with closing(Pool(max_instr)) as pool:
         print(args.instrument)
-        p.map(play, args.instrument)
-        p.terminate()
+        pool.map(play, args.instrument)
+        
 
 
         
