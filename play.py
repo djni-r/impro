@@ -40,8 +40,9 @@ if __name__ == "__main__":
                            nargs="+", default="piano")
     args = argparser.parse_args()
     with closing(Pool(max_instr)) as pool:
-        print(args.instrument)
         pool.map(play, args.instrument)
+        
+        
         
 
 
