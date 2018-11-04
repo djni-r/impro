@@ -23,7 +23,7 @@ class UnitPlayer(object):
         note_data_i = (12 * (note.octave - 1) + self.keys[note.key])
         self.sd.play(self.sounds.data[3 + note_data_i], self.sounds.rate)
         if self.printout:
-            print(note)
+            print(str(note) + " Piano")
             
         time.sleep(self.sec_per_beat * float(Fraction(note.duration)))
 
@@ -62,7 +62,7 @@ class CelloUnitPlayer(UnitPlayer):
         if sound is not None:
             self.sdc.play(sound, self.sounds.rate)
             if self.printout:
-                print(note)
+                print(str(note) + " Cello")
             time.sleep(self.sec_per_beat * 3 * float(Fraction(note.duration)))
 
 
@@ -78,7 +78,7 @@ class XyloUnitPlayer(UnitPlayer):
         map_key = note.key + str(note.octave)
         self.sdx.play(self.sounds.data[map_key], self.sounds.rate)
         if self.printout:
-            print note
+            print(str(note) + " Xylo")
         time.sleep(self.sec_per_beat * float(Fraction(note.duration)))
 
         
