@@ -35,11 +35,22 @@ directions = [1, -1] # ascending, descending
 durations = [ "2/1", "1/1", "1/2", "1/3", "1/4", "1/6",
               "1/8", "1/12", "1/16", "1/24",  "1/32" ]
 
-durs_range_map = { "cello" : ("2/1", "1/8"),
-                   "note" : ("2/1", "1/32"),
-                   "pause" : ("2/1", "1/32"),
-                   "pattern" : ("1/12", "1/32"),
-                   "sequence" : ("1/12", "1/32") }
+durs_range_map = { "cello" :
+                   { "note" : ("2/1", "1/8"),
+                     "pause" : ("2/1", "1/8"),
+                     "pattern" : ("1/2", "1/6"),
+                     "sequence" : ("1/1", "1/6") },
+                   "xylo" :
+                   { "note" : ("2/1", "1/32"),
+                     "pause" : ("2/1", "1/32"),
+                     "pattern" : ("1/12", "1/32"),
+                     "sequence" : ("1/12", "1/32") },
+                   "piano" :
+                   { "note" : ("2/1", "1/16"),
+                     "pause" : ("2/1", "1/32"),
+                     "pattern" : ("1/8", "1/16"),
+                     "sequence" : ("1/8", "1/16") }
+}
 
 volumes = range(8)
 articulations = ["staccato", "sforzato", "legato"]

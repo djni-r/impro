@@ -26,13 +26,10 @@ class ProbCalc:
 
 
     def durs_probs(self, unit_type = "note"):
-        if self.instrument == "cello":
-            map_key = "cello"
-        else:
-            map_key = unit_type
-        probs = durations[durations.index(durs_range_map[map_key][0]):\
-                          durations.index(durs_range_map[map_key][1])]
-        return nprand.choice(probs)           
+        unit_types = durs_range_map[self.instrument]
+        probs = durations[durations.index(unit_types[unit_type][0]):\
+                          durations.index(unit_types[unit_type][1])]
+        return nprand.choice(probs)         
 
 
     def keys_probs(self):
