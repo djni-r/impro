@@ -3,8 +3,7 @@ from multiprocessing import Pool
 from contextlib import closing
 from threading import Thread
 
-#from pynput import keyboard 
-
+import impro
 from impro.Mind import Mind
 from vendor.UnitPlayer import UnitPlayer, CelloUnitPlayer, XyloUnitPlayer
 
@@ -50,7 +49,7 @@ if __name__ == "__main__":
     argparser = ArgumentParser()
     max_instr = 5
     argparser.add_argument("instrument", choices=["piano","cello","xylo"],
-                           nargs="+", default="piano")
+                           nargs="+")
     args = argparser.parse_args()
     
     with closing(Pool(max_instr)) as pool:
