@@ -13,9 +13,10 @@ dist/*
 */*/*~
 impro/__pycache__
 */.#*
-impro/resources/*_sounds
 impro/*.pyc
 *~
 */*.pyc
-vendor/cello
 vendor/resources
+test_impro
+test_impro/*
+run_tests.py
