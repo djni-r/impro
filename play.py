@@ -11,12 +11,32 @@ from impro.Mind import Mind
 from vendor.UnitPlayer import UnitPlayer, CelloUnitPlayer, XyloUnitPlayer
 
 class App(object):
+    note_color = {
+        "-" : "white",
+        "A" : "red",
+        "B" : "orange",
+        "C" : "yellow",
+        "D" : "green",
+        "E" : "blue",
+        "F" : "darkblue",
+        "G" : "purple",
+        "Ab": "#AD0080",
+        "Bb": "#FF5100",
+        "Db": "#BDFF00",
+        "Eb": "#0087FF",
+        "Gb": "#51008B"
+    }
+
+    WINDOW_WIDTH = 800
+    WINDOW_HEIGHT = 450
+                   
     def __init__(self):
         self.stop_flag = False
         
         self.master = Tk()
         self.master.title("Impro")
-        self.cs = Canvas(self.master, width = 200, height = 200)
+        self.cs = Canvas(self.master, width = App.WINDOW_WIDTH,
+                         height = App.WINDOW_HEIGHT)
         #piano_btn = ttk.Button(self.master, text = "Piano", command=self.play)
         self.cs.pack()
         #self.master.update()
@@ -48,7 +68,8 @@ class App(object):
             
             while not self.stop_flag:
                 unit = mind.choose_unit()
-                self.cs.create_rectangle(random.randrange(200), random.randrange(200), random.randrange(200), random.randrange(200), fill = random.choice(["red","yellow","blue"]))
+                #for u in unit.units:
+                self.cs.create_rectangle(random.randrange(App.WINDOW_WIDTH), random.randrange(App.WINDOW_HEIGHT), random.randrange(App.WINDOW_WIDTH), random.randrange(App.WINDOW_HEIGHT), fill = App.note_color[unit.key], outline = 'white', width = 3)
                 print("created")
                 self.master.update()
                 unit.play(unit_player)

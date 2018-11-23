@@ -17,6 +17,3 @@ impro/*.pyc
 *~
 */*.pyc
 vendor/resources
-test_impro
-test_impro/*
-run_tests.py

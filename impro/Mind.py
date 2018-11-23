@@ -49,7 +49,7 @@ class Mind(object):
         if random.random() < self.prob_calc.repeat_prob() \
         and len(self.units_mem) > 0:
             notes_count = self.prob_calc.repeat_count(len(self.units_mem))
-            pat = Pattern([self.units_mem[i] for i in range(-1*notes_count, 0)])
+            pat = Pattern([copy.copy(self.units_mem[i]) for i in range(-1*notes_count, 0)])
             return pat
         elif self.cur_seq != None and not self.cur_seq.finished:
             unit = self.__next_in_seq()
@@ -105,14 +105,14 @@ class Mind(object):
             
 
         unit = Note(key, octave, duration, volume, articul)
-
+        print("Chose unit {}\n".format(unit))
         if random.random() < self.prob_calc.pattern_prob():
             unit.duration = self.prob_calc.durs_probs("pattern")
             pat_form = nprand.choice(pattern_forms,
                                      p=self.prob_calc.pat_form_probs())
             pat_mode = nprand.choice(pattern_modes,
                                      p=self.prob_calc.pat_mode_probs())
-
+            print("preparing units")
             pat_units = self.__prepare_pattern_units(pat_form, pat_mode, unit)
             unit = Pattern(pat_units, pat_form, pat_mode)     
 
@@ -170,16 +170,22 @@ class Mind(object):
             cur_unit.octave = abs_octave
 
             if isinstance(cur_unit, Pattern):
+                print("in seq patt")
+                print(cur_unit)
                 pat_units = self.__prepare_pattern_units(cur_unit.form,
                                                          cur_unit.mode,
                                                          cur_unit.units[0])
                 #for i in range(len(pat_units)):
                 cur_unit.units = pat_units
 
+        if (self.cur_seq.direction == -1):
+            tones = tones[::-1]
+            
         return cur_unit
 
     
     def __prepare_pattern_units(self, form, mode, base_unit):
+        print("__prepare " + str(base_unit))
         tones = patterns_to_tones[(form,mode)]
         key_i = keys.index(base_unit.key)
         pat_units = [base_unit]
