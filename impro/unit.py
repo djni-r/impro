@@ -54,8 +54,6 @@ class Note(object):
 class Pattern(object):
     
     def __init__(self, units, form = None, mode = None):
-#        Pattern.octave = BaseUnitDescr("octave", units[0])
-#        Pattern.key = BaseUnitDescr("key", units[0])
         
         self.form = form
         self.mode = mode
@@ -88,7 +86,7 @@ class Pattern(object):
         self.__str__()
         for unit in self.units:
             unit.play(vendor)
-        #vendor.play_pattern(self)
+
         
 
     def __eq__(self, other):
@@ -165,28 +163,4 @@ class Pause(object):
     def __str__(self):
         return "{} pause".format(self.duration)
 
-
-
-class BaseUnitDescr(object):
-    """ 
-    DECSRIPTOR FOR PATTERN
-    reads and assigns values from/to the base_unit of the Pattern
-    """
-    def __init__(self, name, base_unit):
-        self.name = name
-        self.base_unit = base_unit
-        print("b u")
-        print(base_unit)
-        
-
-    def __get__(self, obj, objtype):
-        print("name " + str(self.name))
-        print("obj " + str(obj))
-        print(objtype)
-        print("BU " + self.base_unit)
-        return self.base_unit.__getattribute__(self.name)
-
-    
-    def __set__(self, obj, val):
-        self.base_unit.__setattr__(self.name, val)
         

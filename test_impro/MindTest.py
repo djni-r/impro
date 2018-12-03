@@ -1,8 +1,12 @@
 import unittest
+import logging
+import sys
 
 from impro.Mind import Mind
 from impro.Sequence import Sequence
 from impro.unit import Note, Pattern
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class MindTest(unittest.TestCase):
 
@@ -17,6 +21,7 @@ class MindTest(unittest.TestCase):
             Note("A", 4, "1/4"),
             Note("B", 4, "1/4")
         ]
+
 
     #@unittest.skip("ok")
     def test_choose_unit_with_seq(self):
@@ -73,7 +78,7 @@ class MindTest(unittest.TestCase):
         result = [first_pat]
         for i in range(4):
             unit = self.mind.choose_unit()
-            print(unit.key)
+            logging.debug(unit)
             result.append(unit)
             
         print(list(str(n) for n in result))

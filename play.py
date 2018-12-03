@@ -1,14 +1,18 @@
 import random
+import logging
 
 from argparse import ArgumentParser
 from multiprocessing import Pool
 from contextlib import closing
 
-from tkinter import *
-from tkinter import ttk
+from Tkinter import *
 
 from impro.Mind import Mind
 from vendor.UnitPlayer import UnitPlayer, CelloUnitPlayer, XyloUnitPlayer
+
+
+logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
+logger = logging.getLogger()
 
 class App(object):
     note_color = {
@@ -27,8 +31,8 @@ class App(object):
         "Gb": "#51008B"
     }
 
-    WINDOW_WIDTH = 800
-    WINDOW_HEIGHT = 450
+    WINDOW_WIDTH = 794
+    WINDOW_HEIGHT = 794
                    
     def __init__(self):
         self.stop_flag = False
@@ -40,7 +44,7 @@ class App(object):
         #piano_btn = ttk.Button(self.master, text = "Piano", command=self.play)
         self.cs.pack()
         #self.master.update()
-        print("end app init")
+        logger.info("end app init")
         
 
     def play(self, instrument = "piano", key = None, mode = None,
@@ -66,13 +70,12 @@ class App(object):
     
             mind.start_beat()
             
-            while not self.stop_flag:
-                unit = mind.choose_unit()
-                #for u in unit.units:
-                self.cs.create_rectangle(random.randrange(App.WINDOW_WIDTH), random.randrange(App.WINDOW_HEIGHT), random.randrange(App.WINDOW_WIDTH), random.randrange(App.WINDOW_HEIGHT), fill = App.note_color[unit.key], outline = 'white', width = 3)
-                print("created")
+        while not self.stop_flag:
+            unit = mind.choose_unit()
+            for u in unit.units:
+                self.cs.create_rectangle(random.randrange(App.WINDOW_WIDTH), random.randrange(App.WINDOW_HEIGHT), random.randrange(App.WINDOW_WIDTH), random.randrange(App.WINDOW_HEIGHT), fill = App.note_color[u.key], outline = 'white', width = 3)
                 self.master.update()
-                unit.play(unit_player)
+                u.play(unit_player)
 
     def stop(self):
         self.stop_flag = True
@@ -80,8 +83,7 @@ class App(object):
 if __name__ == "__main__":
     argparser = ArgumentParser()
     max_instr = 5
-    argparser.add_argument("instrument", choices=["piano","cello","xylo"],
-                           nargs="+", default="piano")
+    argparser.add_argument("instrument", choices=["piano","cello","xylo"], nargs=1)
     args = argparser.parse_args()
 
     app = App()
