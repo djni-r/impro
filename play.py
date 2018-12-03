@@ -41,9 +41,8 @@ class App(object):
         self.master.title("Impro")
         self.cs = Canvas(self.master, width = App.WINDOW_WIDTH,
                          height = App.WINDOW_HEIGHT)
-        #piano_btn = ttk.Button(self.master, text = "Piano", command=self.play)
+   
         self.cs.pack()
-        #self.master.update()
         logger.info("end app init")
         
 
@@ -87,15 +86,8 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     app = App()
-            
-    #mainframe = ttk.Frame(root, padding="3")
-    #mainframe.grid(column=0, row=0, sticky=(N,W,S,E))
-    #
-    #piano_btn.grid(column=2, row=2, sticky=(W,E))
-
     app.play(args.instrument[0])
-#    with closing(Pool(max_instr)) as pool:
-#        pool.map(app.play, args.instrument)
+
         
         
         

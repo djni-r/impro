@@ -60,7 +60,7 @@ class Pattern(object):
         self.units = units
         self._key = units[0].key
         self._octave = units[0].octave
-        print("init pattern")
+
         
     @property
     def key(self):
