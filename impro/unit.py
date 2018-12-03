@@ -9,7 +9,17 @@ class Note(object):
         self.duration = Fraction(duration)
         self.volume = volume
         self.articulation = articulation
+        self._units = None
 
+    @property
+    def units(self):
+        self._units = [self]
+        return self._units
+
+    @units.setter
+    def units(self, value):
+        self._units = value
+    
         
     def play(self, vendor):
         vendor.play_note(self)
@@ -44,19 +54,39 @@ class Note(object):
 class Pattern(object):
     
     def __init__(self, units, form = None, mode = None):
-        Pattern.octave = BaseUnitDescr("octave", units[0])
-        Pattern.key = BaseUnitDescr("key", units[0])
         
         self.form = form
         self.mode = mode
         self.units = units
+        self._key = units[0].key
+        self._octave = units[0].octave
         
-     
+        
+    @property
+    def key(self):
+        return self._key
+
+
+    @key.setter
+    def key(self, value):
+        self._key = value
+
+        
+    @property
+    def octave(self):
+        return self._octave
+
+
+    @octave.setter
+    def octave(self, value):
+        self._octave = value
+
+    
     def play(self, vendor):
         self.__str__()
         for unit in self.units:
             unit.play(vendor)
-        #vendor.play_pattern(self)
+
         
 
     def __eq__(self, other):
@@ -82,13 +112,48 @@ class Pattern(object):
         for unit in self.units:
             content += str(unit) + " "
 
-        return content
+        return content + "\n"
 
     
 
 class Pause(object):
     def __init__(self, duration):
         self.duration = Fraction(duration)
+        self._units = None
+        self._key = "-"
+        self._octave = 0
+        
+
+
+    @property
+    def units(self):
+        self._units = [self]
+        return self._units
+
+    
+    @units.setter
+    def units(self, value):
+        self._units = value
+
+
+    @property
+    def key(self):
+        return self._key
+
+
+    @key.setter
+    def key(self, value):
+        self.key = "-"
+
+
+    @property
+    def octave(self):
+        return self._octave
+
+
+    @octave.setter
+    def octave(self, value):
+        sef._octave = 0
 
         
     def play(self, vendor):
@@ -98,22 +163,4 @@ class Pause(object):
     def __str__(self):
         return "{} pause".format(self.duration)
 
-
-
-class BaseUnitDescr(object):
-    """ 
-    DECSRIPTOR FOR PATTERN
-    reads and assigns values from/to the base_unit of the Pattern
-    """
-    def __init__(self, name, base_unit):
-        self.name = name
-        self.base_unit = base_unit
-        
-
-    def __get__(self, obj, objtype):
-        return self.base_unit.__getattribute__(self.name)
-
-    
-    def __set__(self, obj, val):
-        self.base_unit.__setattr__(self.name, val)
         

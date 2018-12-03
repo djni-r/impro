@@ -1,11 +1,15 @@
 import multiprocessing as mp
+import sys
+import logging
 from argparse import ArgumentParser
 from threading import Thread
 from contextlib import closing
+
 import impro
 from impro.Mind import Mind
 from vendor.UnitPlayer import UnitPlayer, CelloUnitPlayer, XyloUnitPlayer
 
+logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
 
 def play(instrument = "piano", key = None, mode = None,
          beat = (4,4), bpm = 60, max_mem = None,
