@@ -16,23 +16,23 @@ logger = logging.getLogger()
 
 class App(object):
     note_color = {
-        "-" : "white",
-        "C" : "red",
-        "Db": "#FF5100", #red-orange
-        "D" : "orange",
-        "Eb": "#9ACD32", #yellow-green
-        "E" : "yellow",
-        "F" : "green",
-        "Gb": "#0087FF", #green-blue
-        "G" : "blue",
-        "Ab": "#0000C1", #blue-darkblue
-        "A" : "darkblue",
-        "Bb": "#51008B",  #darkblue-purple
-        "B" : "purple"
+        "-" : ("white",),
+        "C" : ("#FF0000", "#EF0000", "#DF0000", "#CF0000", "#BF0000", "#AF0000"), #red
+        "Db": ("#FF6100", "#F85900", "#EF5100", "#E84800", "#DF4100", "#D83900"), #red-orange
+        "D" : ("#FFA500", "#F79D00", "#EF9500"),#orange
+        "Eb": ("#FFAD00", "#FFB400", "#FFBD00"), #yellow-orange
+        "E" : ("#FFFF00", "#F7F700", "#EFEF00", "#DFDF00"), #yellow
+        "F" : ("#00FF00", "#00EE00", "#00DD00", "#00CC00", "#00BB00", "#00AA00"), #green
+        "Gb": ("#00FFFF", "#00DDDD", "#00BBBB", "#009999"), #green-blue
+        "G" : ("#0000FF", "#0000DD", "#0000BB", "#0000AA", "#000099"), #blue
+        "Ab": ("#000088", "#000077", "#000066",), #blue-darkblue
+        "A" : ("#000055", "#00004D", "#000045", "#00003D", "#000035"),
+        "Bb": ("#8000ff", "#8000ee", "#8000cc", "#8000aa", "#800099"),  #darkblue-purple
+        "B" : ("#800080", "#780078", "#700070", "#680068", "#600060", "#500050") #purple
     }
     keys = ["-", "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
-    WINDOW_WIDTH = 794
+    WINDOW_WIDTH = 1411
     WINDOW_HEIGHT = 794
                    
     def __init__(self):
@@ -94,7 +94,7 @@ class App(object):
                                  random.randrange(App.WINDOW_HEIGHT - seg_height * (u_octave - min_octave) - subseg_height * (App.keys.index(u_key) + 1), App.WINDOW_HEIGHT - seg_height * (u_octave - min_octave) - subseg_height * (App.keys.index(u_key))),
                                  rand + App.WINDOW_WIDTH * Fraction(u_dur) / 2.0,
                                  random.randrange(App.WINDOW_HEIGHT - seg_height * (u_octave - min_octave) - subseg_height * (App.keys.index(u_key) + 1), App.WINDOW_HEIGHT - seg_height * (u_octave - min_octave) - subseg_height * (App.keys.index(u_key))) + seg_width / (u_octave if u_octave !=0 else 1) / 3,
-                                 fill = App.note_color[u_key], outline = 'white', width = 1)
+                                 fill = random.choice(App.note_color[u_key]), outline = 'white', width = 2)
 
 
     def random_rect(self, u_key):
