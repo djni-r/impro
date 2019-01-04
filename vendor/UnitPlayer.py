@@ -1,9 +1,16 @@
 import time
 import random
+import logging
+import sys
+
+from playsound import playsound
 from fractions import Fraction
 
 import load_sounds
 
+
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class UnitPlayer(object):
     keys = { "C":0, "Db":1, "D":2, "Eb":3,
@@ -21,9 +28,10 @@ class UnitPlayer(object):
         
     def play_note(self, note):  
         note_data_i = (12 * (note.octave - 1) + self.keys[note.key])
-        self.sd.play(self.sounds.data[3 + note_data_i], self.sounds.rate)
+        playsound('vendor/resources/piano_sounds/piano_{:05d}.wav'.format(note_data_i), False)
+        #self.sd.play(self.sounds.data[3 + note_data_i], self.sounds.rate)
         if self.printout:
-            print(note)
+            print(str(note) + " Piano")
             
         time.sleep(self.sec_per_beat * float(Fraction(note.duration)))
 
@@ -52,17 +60,19 @@ class CelloUnitPlayer(UnitPlayer):
         
         
     def play_note(self, note):
+        logger.debug('in play_note')
         map_key = note.key + str(note.octave)
         sound = None
-            
+        logger.debug(self.sounds)
         if map_key in self.sounds.data:
             sound = self.sounds.data[map_key][random.choice(\
                 list(self.sounds.data[map_key].keys()))]
-
+        logger.debug(sound)
         if sound is not None:
-            self.sdc.play(sound, self.sounds.rate)
+            playsound('vendor/resources/cello_sounds/'+sound, False)
+            #self.sdc.play(sound, self.sounds.rate)
             if self.printout:
-                print(note)
+                print(str(note) + " Cello")
             time.sleep(self.sec_per_beat * 3 * float(Fraction(note.duration)))
 
 
@@ -76,9 +86,11 @@ class XyloUnitPlayer(UnitPlayer):
 
     def play_note(self, note):
         map_key = note.key + str(note.octave)
-        self.sdx.play(self.sounds.data[map_key], self.sounds.rate)
+        logger.debug(self.sounds.data[map_key])
+        playsound('vendor/resources/xylo_sounds/'+self.sounds.data[map_key], False)
+        #self.sdx.play(self.sounds.data[map_key], self.sounds.rate)
         if self.printout:
-            print note
+            print(str(note) + " Xylo")
         time.sleep(self.sec_per_beat * float(Fraction(note.duration)))
 
         

@@ -1,8 +1,12 @@
 import unittest
+import logging
+import sys
 
 from impro.Mind import Mind
 from impro.Sequence import Sequence
 from impro.unit import Note, Pattern
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class MindTest(unittest.TestCase):
 
@@ -17,6 +21,7 @@ class MindTest(unittest.TestCase):
             Note("A", 4, "1/4"),
             Note("B", 4, "1/4")
         ]
+
 
     #@unittest.skip("ok")
     def test_choose_unit_with_seq(self):
@@ -45,6 +50,7 @@ class MindTest(unittest.TestCase):
         self.assertEqual(result, self.c_scale[::-1])
 
 
+        
     def test_choose_unit_pattern(self):
         pc = self.mind.prob_calc
         pc.pattern_prob = lambda: 1
@@ -64,6 +70,20 @@ class MindTest(unittest.TestCase):
         self.assertEqual(expected, unit)
 
 
+    def test_choose_unit_pattern_seq_back(self):
+        first_pat = Pattern([Note("F", 5, "1/12")], "sexta", "major")
+        
+        self.mind.cur_seq = Sequence("triad", 5, "A", "major", -1, first_pat)
+                                    
+        result = [first_pat]
+        for i in range(4):
+            unit = self.mind.choose_unit()
+            logging.debug(unit)
+            result.append(unit)
+            
+        print(list(str(n) for n in result))
+
+        
     def test_choose_unit_pattern_max(self):
         pc = self.mind.prob_calc
         pc.pattern_prob = lambda: 1

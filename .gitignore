@@ -1,5 +1,11 @@
+build
+build/*
+dist
+dist/*
+*.spec
 .project
 .pydevproject
+.#*
 */#*#
 *#
 */*/#*#
@@ -7,9 +13,10 @@
 */*/*~
 impro/__pycache__
 */.#*
-impro/resources/*_sounds
 impro/*.pyc
 *~
 */*.pyc
-vendor/cello
 vendor/resources
+*.swp
+test_impro/GraphicUnitPlayerTest.py
+vendor/GraphicUnitPlayer.py
