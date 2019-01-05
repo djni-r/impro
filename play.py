@@ -28,7 +28,7 @@ class App(object):
     SOUND_PATH = "vendor/resources/misc_sounds/00{}.wav"
                    
     def __init__(self):
-        self.stop_flag = False
+        self.stop_dict = { 'piano' : False, 'cello' : False, 'xylo' : False }
         
         self.root = Tk()
         self.root.title("Impro")
@@ -84,7 +84,10 @@ class App(object):
              beat = (4,4), bpm = 60, max_mem = None,
              max_octave = 5, max_tone = 12, min_octave = 1, min_tone = 1):
 
+        self.stop_dict[instrument] = False
+
         LOGGER.debug('in play ' + instrument)
+
         mind = Mind(instrument, key, mode, beat, bpm,
                     max_mem, max_octave, max_tone,
                     min_octave, min_tone)
@@ -103,11 +106,13 @@ class App(object):
         else:
             unit_player = UnitPlayer(bpm)
 
-        self.btn_dict[instrument]['command'] = self.stop_command(instrument)
+        self.btn_dict[instrument]['command'] = lambda: self.stop(instrument)
         #! doesn't work yet    
         mind.start_beat()
         
-        while not self.stop_flag:
+        while not self.stop_dict[instrument]:
+            #while self.wait:
+            #    time.sleep(0.1)
             unit = mind.choose_unit()
             unit.play(unit_player)
 
@@ -116,12 +121,8 @@ class App(object):
     def start_command(self, instr):
         return lambda: Thread(target=self.play, args=(instr,)).start()
 
-            
-    def stop_command(self, instr):
-        return lambda: Thread(target=self.stop, args=(instr,)).start()
-
     def stop(self, instr):
-        self.stop_flag = True
+        self.stop_dict[instr] = True
         self.btn_dict[instr]['command'] = self.start_command(instr)
 
     def play_sound(self, sound):

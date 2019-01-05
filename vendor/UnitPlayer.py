@@ -23,7 +23,7 @@ class UnitPlayer(object):
         self.bpm = bpm
         self.sec_per_beat = 60.0/self.bpm
         self.printout = printout
-        self.sounds = load_sounds.piano()
+        #self.sounds = load_sounds.piano()
         
         
     def play_note(self, note):  
