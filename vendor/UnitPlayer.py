@@ -19,7 +19,7 @@ class UnitPlayer(object):
     
     def __init__(self, bpm, printout = True):
         print("init UnitPlayer")
-        self.sd = __import__('sounddevice')
+        #self.sd = __import__('sounddevice')
         self.bpm = bpm
         self.sec_per_beat = 60.0/self.bpm
         self.printout = printout
@@ -52,7 +52,7 @@ class UnitPlayer(object):
 class CelloUnitPlayer(UnitPlayer):
 
     def __init__(self, bpm, printout = True):
-        self.sdc = __import__('sounddevice')
+        #self.sdc = __import__('sounddevice')
         self.bpm = bpm
         self.sec_per_beat = 60.0/self.bpm
         self.printout = printout
@@ -79,7 +79,7 @@ class CelloUnitPlayer(UnitPlayer):
 class XyloUnitPlayer(UnitPlayer):
 
     def __init__(self, bpm, printout = True):
-        self.sdx = __import__('sounddevice')
+        #self.sdx = __import__('sounddevice')
         UnitPlayer.__init__(self, bpm)
         self.sounds = load_sounds.xylo()
 

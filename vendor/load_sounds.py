@@ -55,8 +55,7 @@ def misc():
     data = []
     dirname = os.path.dirname(__file__)+"/resources/misc_sounds"
     for name in os.listdir(dirname):
-        print dirname, name
-        data.append(wf.read(dirname + "/" + name))
+        data.append(dirname+'/'+name)
 
     logger.debug(data)
     return data
