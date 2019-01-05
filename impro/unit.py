@@ -138,7 +138,8 @@ class Pause(object):
 
     @property
     def units(self):
-        self._units = [self]
+        if not self._units:
+            self._units = [self]
         return self._units
 
     
@@ -173,5 +174,10 @@ class Pause(object):
         
     def __str__(self):
         return "{} pause".format(self.duration)
+
+
+    def __copy__(self):
+        return Pause(self.duration)
+        
 
         
