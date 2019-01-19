@@ -51,11 +51,12 @@ def xylo():
     return _sounds(data, rate)
 
 
-def misc():
+def misc(folder_num):
     data = []
-    dirname = os.path.dirname(__file__)+"/resources/misc_sounds"
+    dirname = os.path.dirname(__file__)+"/resources/misc_sounds/" + str(folder_num)
     for name in os.listdir(dirname):
-        data.append(dirname+'/'+name)
+        if not name.startswith("."): 
+            data.append(dirname+'/'+name)
 
     logger.debug(data)
     return data

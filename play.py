@@ -2,13 +2,11 @@ import random
 import logging
 import time
 import os
+import math
 from threading import Thread
 from playsound import playsound
-from fractions import Fraction
 from argparse import ArgumentParser
-from multiprocessing import Pool, Queue, Process
 from collections import OrderedDict
-from contextlib import closing
 from tkinter import *
 from tkinter import ttk
 
@@ -25,58 +23,41 @@ class App(object):
     WINDOW_WIDTH = 1411
     WINDOW_HEIGHT = 794
     PROCESSES = 10
-    SOUND_PATH = "vendor/resources/misc_sounds/00{}.wav"
+    INSTRUMENTS = ('piano', 'cello', 'xylo')
                    
-    def __init__(self):
-        self.stop_dict = { 'piano' : False, 'cello' : False, 'xylo' : False }
-        
+    def __init__(self, track):
+        self.stop_dict = dict( zip(App.INSTRUMENTS,
+                                  ( False for i in range(len(App.INSTRUMENTS)) )) )
         self.root = Tk()
-        self.root.title("Impro")
-
-        
-        self.pool = Pool(App.PROCESSES)
-
-        LOGGER.debug("after process loop")
-
+        self.root.title("Impro") 
         self.mainframe = ttk.Frame(self.root, padding="3")
-        self.mainframe.grid(column=3, row=3, sticky=(N,W,S,E))
-
+        self.mainframe.grid(column=0, row=0, sticky=(N,W,S,E))
+        self.mainframe.bind('<Destroy>', lambda e: self.stop_all())
         self.btn_dict = OrderedDict()
-        
-        self.btn_dict['piano'] = ttk.Button(
-            self.mainframe,
-            text = "Piano",
-            command = self.start_command('piano'))
-        
-        self.btn_dict['cello'] = ttk.Button(
-            self.mainframe,
-            text = "Cello",
-            command = self.start_command('cello'))
-        
-        self.btn_dict['xylo'] = ttk.Button(
-            self.mainframe,
-            text = "Xylo",
-            command = self.start_command('xylo'))
 
-        sound_paths = load_sounds.misc()
+        for i, instr in enumerate(App.INSTRUMENTS):
+            btn = ttk.Button(
+                self.mainframe,
+                text = instr.capitalize(),
+                command = self.start_command(instr))
+            btn.grid(column=0, row=i, stick=(W,E))
+            self.btn_dict[instr] = btn
+            
+        sound_paths = load_sounds.misc(track)
         commands = [lambda i=i: Thread(target=self.play_sound,
-                                     args=(sound_paths[i],)).start() for i in range(6)]
-
+                                       args=(sound_paths[i],)).start() \
+                    for i in range(len(sound_paths))]
+        rows = int(math.ceil( math.sqrt(len(commands)) ))
+        
         for e,c in enumerate(commands):
             LOGGER.debug((e,c))
-            self.btn_dict['sound'+str(e+1)] = ttk.Button(
+            btn = ttk.Button(
                 self.mainframe,
                 text = os.path.basename(sound_paths[e]).split('.')[0],
                 command = c)
-    
-        LOGGER.debug(self.btn_dict)
-        dict_iter = iter(self.btn_dict)
-        for j in range(1,4):
-            for k in range(1,4):
-                btn = self.btn_dict[dict_iter.next()]
-                LOGGER.debug(btn['text'])
-                btn.grid(column=j, row=k, stick=(W,E))
-
+            btn.grid(column=e/rows+1, row=e % rows, stick=(W,E))
+            self.btn_dict['sound'+str(e+1)] = btn
+            
         LOGGER.debug("ending init")
 
         
@@ -111,31 +92,41 @@ class App(object):
         mind.start_beat()
         
         while not self.stop_dict[instrument]:
-            #while self.wait:
-            #    time.sleep(0.1)
             unit = mind.choose_unit()
             unit.play(unit_player)
 
         self.stop_flag = False
+
         
     def start_command(self, instr):
         return lambda: Thread(target=self.play, args=(instr,)).start()
 
+    
     def stop(self, instr):
         self.stop_dict[instr] = True
         self.btn_dict[instr]['command'] = self.start_command(instr)
 
+
+    def stop_all(self):
+        for key in self.stop_dict:
+            self.stop_dict[key] = True
+            
+        
     def play_sound(self, sound):
         LOGGER.debug(sound)
         playsound(sound, False)
-        #self.btn_dict['sound'+str(sound)]['command'] = self.stop
+        
     
 if __name__ == "__main__":
     argparser = ArgumentParser()
-    max_instr = 5
-    argparser.add_argument("instrument", choices=["piano","cello","xylo"], nargs=1)
+    dirname = "vendor/resources/misc_sounds"
+    argparser.add_argument("track",
+                           choices = [ str(i) for i in range(1, len(
+                               os.listdir(dirname))+1) ], nargs=1)
+                               
+                               
     args = argparser.parse_args()
-    app = App()
+    app = App(args.track[0])
     try:
         app.root.mainloop()
     except KeyboardInterrupt:
