@@ -1,3 +1,10 @@
+Makary Malinouski 2019
+Copyright notice
+As of 2019 this software comes without license.
+If you are interested in using it, please contact me at
+makarymalinouski@gmail.com
+In case this changes later, I will make it known.
+
 
 Version 0.2.0
 
