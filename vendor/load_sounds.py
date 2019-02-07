@@ -7,7 +7,7 @@ from collections import namedtuple
 import soundfile as sf
 from scipy.io import wavfile as wf
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stderr)
 logger = logging.getLogger()
 
 _sounds = namedtuple("Sounds", "data, rate")

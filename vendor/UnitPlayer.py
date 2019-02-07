@@ -9,7 +9,7 @@ from fractions import Fraction
 import load_sounds
 
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stderr)
 logger = logging.getLogger(__name__)
 
 class UnitPlayer(object):

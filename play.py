@@ -14,7 +14,7 @@ import vendor.load_sounds as load_sounds
 from impro.Mind import Mind
 from vendor.UnitPlayer import UnitPlayer, CelloUnitPlayer, XyloUnitPlayer
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stderr, level=logging.WARNING)
 LOGGER = logging.getLogger()
 
 
@@ -22,7 +22,6 @@ class App(object):
 
     WINDOW_WIDTH = 1411
     WINDOW_HEIGHT = 794
-    PROCESSES = 10
     INSTRUMENTS = ('piano', 'cello', 'xylo')
                    
     def __init__(self, track):
@@ -42,21 +41,22 @@ class App(object):
                 command = self.start_command(instr))
             btn.grid(column=0, row=i, stick=(W,E))
             self.btn_dict[instr] = btn
-            
-        sound_paths = load_sounds.misc(track)
-        commands = [lambda i=i: Thread(target=self.play_sound,
-                                       args=(sound_paths[i],)).start() \
-                    for i in range(len(sound_paths))]
-        rows = int(math.ceil( math.sqrt(len(commands)) ))
+
+        if track:
+            sound_paths = load_sounds.misc(track)
+            commands = [lambda i=i: Thread(target=self.play_sound,
+                                           args=(sound_paths[i],)).start() \
+                        for i in range(len(sound_paths))]
+            rows = int(math.ceil( math.sqrt(len(commands)) ))
         
-        for e,c in enumerate(commands):
-            LOGGER.debug((e,c))
-            btn = ttk.Button(
-                self.mainframe,
-                text = os.path.basename(sound_paths[e]).split('.')[0],
-                command = c)
-            btn.grid(column=e/rows+1, row=e % rows, stick=(W,E))
-            self.btn_dict['sound'+str(e+1)] = btn
+            for e,c in enumerate(commands):
+                LOGGER.debug((e,c))
+                btn = ttk.Button(
+                    self.mainframe,
+                    text = os.path.basename(sound_paths[e]).split('.')[0],
+                    command = c)
+                btn.grid(column=e/rows+1, row=e % rows, stick=(W,E))
+                self.btn_dict['sound'+str(e+1)] = btn
             
         LOGGER.debug("ending init")
 
@@ -122,10 +122,12 @@ if __name__ == "__main__":
     dirname = "vendor/resources/misc_sounds"
     argparser.add_argument("track",
                            choices = [ str(i) for i in range(1, len(
-                               os.listdir(dirname))+1) ], nargs=1)
-                               
-                               
+                               os.listdir(dirname))+1) ],
+                           nargs='?',
+                           default=[None])
+                                                           
     args = argparser.parse_args()
+    LOGGER.debug('argv: ' + str(args.track))
     app = App(args.track[0])
     try:
         app.root.mainloop()
