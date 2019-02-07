@@ -60,7 +60,8 @@ class Pattern(object):
         self.units = units
         self._key = units[0].key
         self._octave = units[0].octave
-        
+        self._duration = units[0].duration
+
         
     @property
     def key(self):
@@ -71,23 +72,27 @@ class Pattern(object):
     def key(self, value):
         self._key = value
 
-        
-    @property
-    def octave(self):
-        return self._octave
-
 
     @octave.setter
     def octave(self, value):
         self._octave = value
 
-    
+
+    @property
+    def duration(self):
+        return self._duration
+
+
+    @duration.setter
+    def duration(self, value):
+        self._duration = value
+
+        
     def play(self, vendor):
         self.__str__()
         for unit in self.units:
             unit.play(vendor)
 
-        
 
     def __eq__(self, other):
         if other != None \
@@ -122,12 +127,12 @@ class Pause(object):
         self._units = None
         self._key = "-"
         self._octave = 0
-        
 
 
     @property
     def units(self):
-        self._units = [self]
+        if not self._units:
+            self._units = [self]
         return self._units
 
     
@@ -163,4 +168,6 @@ class Pause(object):
     def __str__(self):
         return "{} pause".format(self.duration)
 
-        
+
+    def __copy__(self):
+        return Pause(self.duration)

@@ -1,3 +1,34 @@
+
+Version 0.2.0
+
+Software music improvisation. Essentially it is a software that improvises, 
+i.e. goes between random notes and responses to the notes that were played 
+before, given certain sounds and rules. The rules are hardcoded, but the 
+choices of the notes happen on a semi-stochastic basis. It does not use ML or Deep Learning at this point.
+
+Changes from the previous version:
+
+- Implemeted minimal GUI
+- Aded extra sounds that can be played as samples
+- Changed the library that plays sounds from sounddevice to playsound
+- which in turn made sounds legato, because of asynchronous play
+- made some practical changes in the code
+
+Dependencies are not included in the source code.
+
+There is no executable at this point, but I might add it to the distro repository later.
+
+The bare GUI has three buttons, Piano, Cello, Xylo, you can press it to start playing, and press again to stop.
+To add extra sounds, create a folder in vendor/resources/misc_sounds and add sounds in it.
+When starting the program, add the folder name as a command-line argument.
+More than one folder can be added, but only one of them can be used at one time.
+
+The extra sounds will appear along the primary buttons, named same as the files. These buttons can only start the sound, but not stop it.
+
+>>>>>>>>>>>>>>>>>>>>
+
+Version 0.1.0
+
 Software music improvisation. Essentially it is a software that improvises, 
 i.e. goes between random notes and responses to the notes that were played 
 before, given certain sounds and rules. The rules are hardcoded, but the 

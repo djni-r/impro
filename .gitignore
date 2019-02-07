@@ -16,7 +16,8 @@ impro/__pycache__
 impro/*.pyc
 *~
 */*.pyc
-vendor/resources
-test_impro
-test_impro/*
-run_tests.py
+*.swp
+test_impro/GraphicUnitPlayerTest.py
+vendor/GraphicUnitPlayer.py
+vendor/resources/misc_sounds
+vendor/resources/colors
