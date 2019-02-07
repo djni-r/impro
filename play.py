@@ -121,8 +121,7 @@ if __name__ == "__main__":
     argparser = ArgumentParser()
     dirname = "vendor/resources/misc_sounds"
     argparser.add_argument("track",
-                           choices = [ str(i) for i in range(1, len(
-                               os.listdir(dirname))+1) ],
+                           choices = os.listdir(dirname),
                            nargs='?',
                            default=[None])
                                                            
