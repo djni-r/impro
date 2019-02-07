@@ -73,6 +73,11 @@ class Pattern(object):
         self._key = value
 
 
+    @property
+    def octave(self):
+        return self._octave
+
+
     @octave.setter
     def octave(self, value):
         self._octave = value
@@ -92,7 +97,7 @@ class Pattern(object):
         self.__str__()
         for unit in self.units:
             unit.play(vendor)
-
+        
 
     def __eq__(self, other):
         if other != None \
@@ -127,10 +132,13 @@ class Pause(object):
         self._units = None
         self._key = "-"
         self._octave = 0
+        
 
 
     @property
     def units(self):
+        self._units = [self]
+
         if not self._units:
             self._units = [self]
         return self._units
@@ -170,4 +178,4 @@ class Pause(object):
 
 
     def __copy__(self):
-        return Pause(self.duration)
+        return Pause(self.duration)        
